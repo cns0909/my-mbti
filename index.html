@@ -2,408 +2,687 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MBTI로 포켓몬 찾기</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>포켓몬 MBTI 도감</title>
 
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+<style>
+* {
+  box-sizing: border-box;
+}
 
-    body {
-      margin: 0;
-      padding: 30px 16px;
-      background: #fff8e9;
-      color: #59472e;
-      font-family: "Malgun Gothic", sans-serif;
-      text-align: center;
-    }
+:root {
+  --ink: #383650;
+  --purple: #8277d9;
+  --pink: #ffb9ce;
+  --blue: #c6e8ff;
+  --paper: #ffffff;
+}
 
-    .container {
-      max-width: 850px;
-      margin: auto;
-      padding: 30px 24px;
-      background: #fffdf7;
-      border: 3px solid #f2d68e;
-      border-radius: 28px;
-      box-shadow: 0 8px 24px #c9a75b25;
-    }
+body {
+  margin: 0;
+  padding: 28px 16px 45px;
+  font-family: "Malgun Gothic", sans-serif;
+  color: var(--ink);
+  background-color: #eeeaff;
+  background-image: radial-gradient(#d5cdfb 1.5px, transparent 1.5px);
+  background-size: 22px 22px;
+}
 
-    .sun {
-      font-size: 48px;
-    }
+.container {
+  max-width: 860px;
+  margin: 0 auto;
+}
 
-    h1 {
-      color: #a56d18;
-      font-size: 34px;
-      margin: 12px 0;
-    }
+.top-card {
+  position: relative;
+  overflow: hidden;
+  padding: 34px 20px 30px;
+  text-align: center;
+  background: white;
+  border: 3px solid var(--ink);
+  border-radius: 30px;
+  box-shadow: 7px 7px 0 var(--ink);
+}
 
-    .subtitle {
-      font-size: 17px;
-      line-height: 1.8;
-      margin-bottom: 28px;
-    }
+.top-card::before,
+.top-card::after {
+  content: "✦";
+  position: absolute;
+  color: #ff9fbd;
+  font-size: 38px;
+}
 
-    h2 {
-      font-size: 23px;
-    }
+.top-card::before {
+  top: 20px;
+  left: 24px;
+}
 
-    .mbti-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
-      margin: 24px 0;
-    }
+.top-card::after {
+  right: 25px;
+  bottom: 20px;
+}
 
-    .mbti-btn {
-      padding: 15px 4px;
-      background: #fff1c9;
-      border: 2px solid #f0d393;
-      border-radius: 14px;
-      color: #77541e;
-      font-size: 18px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: 0.2s;
-    }
+.mini-label {
+  display: inline-block;
+  padding: 7px 13px;
+  background: #e6e0ff;
+  border: 2px solid var(--ink);
+  border-radius: 30px;
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
 
-    .mbti-btn:hover {
-      background: #ffdf91;
-      transform: translateY(-3px);
-    }
+h1 {
+  margin: 18px 0 10px;
+  font-size: clamp(27px, 5vw, 42px);
+  letter-spacing: -1px;
+}
 
-    button:focus-visible {
-      outline: 3px solid #a56d18;
-      outline-offset: 3px;
-    }
+.title-highlight {
+  color: #8070d8;
+}
 
-    .result {
-      display: none;
-      margin-top: 28px;
-      padding: 24px 18px;
-      background: #fff2cb;
-      border: 2px dashed #e5c16c;
-      border-radius: 22px;
-    }
+.intro {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.8;
+  color: #77748f;
+}
 
-    .type-label {
-      display: inline-block;
-      padding: 8px 16px;
-      background: #f5d98e;
-      border-radius: 20px;
-      font-weight: bold;
-    }
+.hero-pokemon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  margin: 24px auto 0;
+}
 
-    .pokemon-emoji {
-      font-size: 100px;
-      line-height: 1.5;
-      margin-top: 12px;
-    }
+.hero-ball {
+  display: grid;
+  place-items: center;
+  width: 82px;
+  height: 82px;
+  border: 3px solid var(--ink);
+  border-radius: 25px;
+  font-size: 44px;
+  transform: rotate(-7deg);
+}
 
-    .pokemon-name {
-      color: #a56d18;
-      font-size: 32px;
-      margin: 4px 0 12px;
-    }
+.hero-ball:nth-child(1) {
+  background: #ffe0eb;
+}
 
-    .pokemon-desc {
-      max-width: 560px;
-      margin: 12px auto 24px;
-      font-size: 17px;
-      line-height: 1.9;
-      white-space: pre-line;
-      word-break: keep-all;
-    }
+.hero-ball:nth-child(2) {
+  background: #d9f2ff;
+  transform: rotate(5deg) translateY(-9px);
+}
 
-    .compatibility {
-      padding: 18px;
-      background: #fffdf7;
-      border-radius: 16px;
-      line-height: 1.8;
-    }
+.hero-ball:nth-child(3) {
+  background: #e4e0ff;
+  transform: rotate(-4deg);
+}
 
-    .compatibility h3 {
-      margin: 0 0 8px;
-      color: #a56d18;
-      font-size: 20px;
-    }
+.select-card {
+  margin-top: 28px;
+  padding: 26px 22px;
+  background: #fff;
+  border: 3px solid var(--ink);
+  border-radius: 26px;
+  box-shadow: 6px 6px 0 var(--ink);
+}
 
-    .compatibility p {
-      margin: 0;
-      font-size: 16px;
-    }
+.section-heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 7px;
+  font-size: 22px;
+}
 
-    .again-btn {
-      margin-top: 22px;
-      padding: 13px 25px;
-      border: none;
-      border-radius: 25px;
-      background: #dca83e;
-      color: white;
-      font-size: 17px;
-      font-weight: bold;
-      cursor: pointer;
-    }
+.section-heading span {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  background: #ffdfeb;
+  border-radius: 12px;
+}
 
-    .again-btn:hover {
-      background: #bd8522;
-    }
+.section-desc {
+  margin: 0 0 22px;
+  color: #85819b;
+  font-size: 14px;
+}
 
-    .footer {
-      margin-top: 24px;
-      color: #9b896c;
-      font-size: 13px;
-    }
+.mbti-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
 
-    @media (max-width: 500px) {
-      .container {
-        padding: 24px 14px;
-      }
+.mbti-btn {
+  min-height: 65px;
+  padding: 12px 3px;
+  border: 2px solid var(--ink);
+  border-radius: 17px;
+  background: #f0edff;
+  color: var(--ink);
+  font-size: 17px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 4px 0 var(--ink);
+  transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
+}
 
-      h1 {
-        font-size: 27px;
-      }
+.mbti-btn:nth-child(4n+2) {
+  background: #e0f4ff;
+}
 
-      .mbti-grid {
-        gap: 7px;
-      }
+.mbti-btn:nth-child(4n+3) {
+  background: #ffe8f0;
+}
 
-      .mbti-btn {
-        padding: 13px 2px;
-        font-size: 15px;
-      }
+.mbti-btn:nth-child(4n) {
+  background: #fff0cf;
+}
 
-      .pokemon-emoji {
-        font-size: 80px;
-      }
+.mbti-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 7px 0 var(--ink);
+}
 
-      .pokemon-name {
-        font-size: 27px;
-      }
+.mbti-btn:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 var(--ink);
+}
 
-      .pokemon-desc {
-        font-size: 15px;
-      }
-    }
-  </style>
+button:focus-visible {
+  outline: 3px solid #8c72ff;
+  outline-offset: 4px;
+}
+
+.result {
+  display: none;
+  margin-top: 30px;
+  animation: popIn 0.35s ease;
+}
+
+@keyframes popIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.result-card {
+  overflow: hidden;
+  border: 3px solid var(--ink);
+  border-radius: 28px;
+  background: white;
+  box-shadow: 7px 7px 0 var(--ink);
+}
+
+.result-top {
+  padding: 28px 18px 22px;
+  background: #e1ddff;
+  border-bottom: 3px solid var(--ink);
+}
+
+.result-tag {
+  display: inline-block;
+  padding: 7px 14px;
+  border: 2px solid var(--ink);
+  border-radius: 30px;
+  background: white;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.pokemon-stage {
+  display: grid;
+  place-items: center;
+  width: 175px;
+  height: 175px;
+  margin: 20px auto 15px;
+  border: 3px solid var(--ink);
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 5px 5px 0 #b8aef3;
+}
+
+.pokemon-emoji {
+  font-size: 94px;
+  line-height: 1;
+}
+
+.pokemon-name {
+  margin: 8px 0;
+  font-size: 34px;
+}
+
+.pokemon-subtitle {
+  margin: 0;
+  font-size: 14px;
+  color: #716b94;
+}
+
+.result-content {
+  padding: 25px 22px;
+}
+
+.info-box {
+  padding: 19px;
+  margin-bottom: 14px;
+  text-align: left;
+  border: 2px solid var(--ink);
+  border-radius: 19px;
+  background: #fff8e7;
+}
+
+.info-box.compat {
+  background: #e8f6ff;
+  margin-bottom: 0;
+}
+
+.info-title {
+  margin: 0 0 10px;
+  font-size: 17px;
+}
+
+.info-text {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.9;
+  white-space: pre-line;
+  word-break: keep-all;
+}
+
+.compat-type {
+  display: inline-block;
+  margin: 0 0 8px;
+  padding: 6px 12px;
+  background: white;
+  border: 2px solid var(--ink);
+  border-radius: 12px;
+  font-weight: bold;
+}
+
+.again-btn {
+  width: 100%;
+  margin-top: 20px;
+  padding: 16px;
+  border: 3px solid var(--ink);
+  border-radius: 17px;
+  background: #ffcada;
+  color: var(--ink);
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 4px 0 var(--ink);
+  transition: 0.15s;
+}
+
+.again-btn:hover {
+  background: #ffb3cb;
+  transform: translateY(-2px);
+}
+
+.footer {
+  margin-top: 27px;
+  text-align: center;
+  color: #7e789c;
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+@media (max-width: 500px) {
+  body {
+    padding: 18px 12px 35px;
+  }
+
+  .top-card {
+    padding: 30px 13px 25px;
+    box-shadow: 5px 5px 0 var(--ink);
+  }
+
+  .top-card::before {
+    left: 12px;
+    top: 12px;
+  }
+
+  .top-card::after {
+    right: 12px;
+    bottom: 10px;
+  }
+
+  .hero-ball {
+    width: 65px;
+    height: 65px;
+    font-size: 34px;
+    border-radius: 20px;
+  }
+
+  .select-card {
+    padding: 22px 14px;
+    box-shadow: 4px 4px 0 var(--ink);
+  }
+
+  .mbti-grid {
+    gap: 9px;
+  }
+
+  .mbti-btn {
+    min-height: 57px;
+    font-size: 15px;
+    border-radius: 13px;
+  }
+
+  .pokemon-stage {
+    width: 145px;
+    height: 145px;
+  }
+
+  .pokemon-emoji {
+    font-size: 78px;
+  }
+
+  .pokemon-name {
+    font-size: 29px;
+  }
+
+  .result-content {
+    padding: 19px 14px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+</style>
 </head>
 
 <body>
-  <main class="container">
-    <div class="sun">☀️</div>
+<main class="container">
 
-    <h1>MBTI로 포켓몬 찾기!</h1>
+  <header class="top-card">
+    <span class="mini-label">POKÉMON PERSONALITY LAB</span>
 
-    <p class="subtitle">
-      내 성격과 닮은 포켓몬은 누구일까? 🐾<br>
-      MBTI를 선택하고 나만의 포켓몬을 찾아 봐!
+    <h1>
+      나와 닮은<br>
+      <span class="title-highlight">포켓몬 찾기!</span>
+    </h1>
+
+    <p class="intro">
+      MBTI를 선택하면 나와 어울리는 포켓몬이 나타나!<br>
+      과연 너와 닮은 포켓몬은 누구일까? ✨
     </p>
 
-    <h2>✨ 나의 MBTI는?</h2>
+    <div class="hero-pokemon" aria-hidden="true">
+      <div class="hero-ball">⚡</div>
+      <div class="hero-ball">🌸</div>
+      <div class="hero-ball">💧</div>
+    </div>
+  </header>
+
+  <section class="select-card">
+    <h2 class="section-heading">
+      <span>🎀</span>
+      MBTI 선택하기
+    </h2>
+
+    <p class="section-desc">
+      내 성격 유형을 눌러서 결과를 확인해 봐!
+    </p>
 
     <div class="mbti-grid" id="mbtiGrid"></div>
+  </section>
 
-    <section class="result" id="result" aria-live="polite">
-      <span class="type-label" id="typeLabel"></span>
+  <section class="result" id="result" aria-live="polite">
+    <div class="result-card">
 
-      <div class="pokemon-emoji" id="pokemonEmoji"></div>
+      <div class="result-top">
+        <span class="result-tag" id="typeLabel"></span>
 
-      <h2 class="pokemon-name" id="pokemonName"></h2>
+        <div class="pokemon-stage">
+          <div class="pokemon-emoji" id="pokemonEmoji"></div>
+        </div>
 
-      <p class="pokemon-desc" id="pokemonDesc"></p>
+        <h2 class="pokemon-name" id="pokemonName"></h2>
 
-      <div class="compatibility">
-        <h3>💛 잘 맞는 MBTI</h3>
-        <p id="compatibleType"></p>
+        <p class="pokemon-subtitle">
+          ✦ 너와 닮은 포켓몬을 발견했어! ✦
+        </p>
       </div>
 
-      <button class="again-btn" onclick="resetPage()">
-        ↩ 다시 고르기
-      </button>
-    </section>
+      <div class="result-content">
+        <div class="info-box">
+          <h3 class="info-title">💜 너와 닮은 이유</h3>
+          <p class="info-text" id="pokemonDesc"></p>
+        </div>
 
-    <p class="footer">
-      포켓몬과 MBTI의 조합은 재미를 위해 만든 콘텐츠입니다.
-    </p>
-  </main>
+        <div class="info-box compat">
+          <h3 class="info-title">💌 찰떡 궁합 MBTI</h3>
+          <div class="compat-type" id="compatibleType"></div>
+          <p class="info-text" id="compatibleDesc"></p>
+        </div>
 
-  <script>
-    const pokemonData = {
-      ISTJ: {
-        pokemon: "거북왕",
-        emoji: "🐢",
-        reason: "ISTJ는 책임감이 강하고 차근차근 목표를 이루는 타입이야.\n거북왕처럼 든든하고 침착하게 자기 역할을 해내는 모습이 잘 어울려!",
-        compatible: "ESFP · 서로 다른 매력으로 일상에 활기를 더할 수 있어."
-      },
+        <button class="again-btn" onclick="resetPage()">
+          ↩ 다른 포켓몬 찾아보기
+        </button>
+      </div>
+    </div>
+  </section>
 
-      ISFJ: {
-        pokemon: "해피너스",
-        emoji: "💗",
-        reason: "ISFJ는 주변 사람을 세심하게 살피고 배려하는 편이야.\n해피너스처럼 다정한 마음으로 다른 사람에게 힘이 되어 주는 모습이 닮았어!",
-        compatible: "ESFP · 따뜻한 배려와 밝은 에너지가 조화를 이룰 수 있어."
-      },
+  <footer class="footer">
+    포켓몬 MBTI 도감 · 나만의 포켓몬을 찾아봐!<br>
+    ※ 포켓몬과 MBTI의 조합은 재미를 위한 창작 콘텐츠입니다.
+  </footer>
 
-      INFJ: {
-        pokemon: "루기아",
-        emoji: "🪽",
-        reason: "INFJ는 깊이 생각하고 자신이 중요하게 여기는 가치를 지키려 해.\n루기아처럼 차분하고 신비로우면서도 다른 존재를 보호하는 이미지가 어울려!",
-        compatible: "ENFP · 깊은 생각과 새로운 아이디어를 함께 나눌 수 있어."
-      },
+</main>
 
-      INTJ: {
-        pokemon: "디아루가",
-        emoji: "⏳",
-        reason: "INTJ는 장기적인 목표를 세우고 전략적으로 생각하는 편이야.\n시간을 다루는 디아루가처럼 계획을 세우고 미래를 내다보는 이미지가 잘 어울려!",
-        compatible: "ENTP · 서로의 생각을 발전시키며 새로운 가능성을 찾을 수 있어."
-      },
+<script>
+const pokemonData = {
+  ISTJ: {
+    pokemon: "거북왕",
+    emoji: "🐢",
+    reason: "책임감이 강하고 차근차근 목표를 이루는 ISTJ!\n거북왕처럼 든든하고 침착하게 자기 역할을 해내는 모습이 잘 어울려.",
+    compatible: "ESFP",
+    compatibleDesc: "서로 다른 매력으로 일상에 활기를 더하고 새로운 경험을 함께 즐길 수 있어."
+  },
 
-      ISTP: {
-        pokemon: "핫삼",
-        emoji: "🦀",
-        reason: "ISTP는 복잡한 상황에서도 실용적인 해결 방법을 찾는 타입이야.\n핫삼처럼 군더더기 없이 빠르고 정확하게 행동하는 모습이 닮았어!",
-        compatible: "ESTJ · 실행력과 체계적인 계획을 서로에게 배울 수 있어."
-      },
+  ISFJ: {
+    pokemon: "해피너스",
+    emoji: "💗",
+    reason: "주변 사람을 세심하게 살피고 배려하는 ISFJ!\n해피너스처럼 다정한 마음으로 다른 사람에게 힘이 되어 주는 모습이 닮았어.",
+    compatible: "ESFP",
+    compatibleDesc: "따뜻한 배려와 밝은 에너지가 만나 즐겁고 편안한 관계를 만들 수 있어."
+  },
 
-      ISFP: {
-        pokemon: "마릴",
-        emoji: "💧",
-        reason: "ISFP는 부드럽고 자유로운 분위기와 자기만의 감성을 중요하게 생각해.\n마릴처럼 귀엽고 편안한 매력으로 주변에 포근한 느낌을 주는 모습이 어울려!",
-        compatible: "ENFJ · 서로의 감정을 존중하고 장점을 응원해 줄 수 있어."
-      },
+  INFJ: {
+    pokemon: "루기아",
+    emoji: "🪽",
+    reason: "깊이 생각하고 자신이 중요하게 여기는 가치를 지키는 INFJ!\n루기아처럼 차분하고 신비로우면서도 다른 존재를 보호하는 이미지가 어울려.",
+    compatible: "ENFP",
+    compatibleDesc: "깊은 생각과 새로운 아이디어를 함께 나누며 서로의 시야를 넓힐 수 있어."
+  },
 
-      INFP: {
-        pokemon: "세레비",
-        emoji: "🌿",
-        reason: "INFP는 상상력이 풍부하고 자신만의 소중한 가치를 중요하게 여겨.\n세레비처럼 자연을 아끼고 희망적인 분위기를 가진 포켓몬이 잘 어울려!",
-        compatible: "ENFJ · 서로의 꿈을 격려하고 마음을 이해할 수 있어."
-      },
+  INTJ: {
+    pokemon: "디아루가",
+    emoji: "⏳",
+    reason: "장기적인 목표를 세우고 전략적으로 생각하는 INTJ!\n시간을 다루는 디아루가처럼 계획을 세우고 미래를 내다보는 이미지가 잘 어울려.",
+    compatible: "ENTP",
+    compatibleDesc: "서로의 독창적인 생각을 발전시키며 새로운 가능성을 찾을 수 있어."
+  },
 
-      INTP: {
-        pokemon: "폴리곤",
-        emoji: "💻",
-        reason: "INTP는 새로운 원리와 지식을 탐구하는 것을 좋아해.\n폴리곤처럼 독특하고 기술적인 이미지를 가진 포켓몬이 잘 어울려!",
-        compatible: "ENTJ · 분석적인 아이디어를 구체적인 계획으로 발전시킬 수 있어."
-      },
+  ISTP: {
+    pokemon: "핫삼",
+    emoji: "🦀",
+    reason: "복잡한 상황에서도 실용적인 해결 방법을 찾는 ISTP!\n핫삼처럼 침착하고 정확하게 행동하며 문제를 해결하는 모습이 닮았어.",
+    compatible: "ESTJ",
+    compatibleDesc: "실전 대처 능력과 체계적인 계획을 서로에게 배울 수 있어."
+  },
 
-      ESTP: {
-        pokemon: "갸라도스",
-        emoji: "🌊",
-        reason: "ESTP는 과감하게 도전하고 눈앞의 상황에 빠르게 대응하는 편이야.\n갸라도스처럼 강한 에너지와 대담한 이미지가 잘 어울려!",
-        compatible: "ISFJ · 서로에게 부족한 점을 보완하며 배울 수 있어."
-      },
+  ISFP: {
+    pokemon: "마릴",
+    emoji: "💧",
+    reason: "자유로운 분위기와 자기만의 감성을 중요하게 생각하는 ISFP!\n마릴처럼 귀엽고 편안한 매력으로 주변에 포근한 느낌을 주는 모습이 어울려.",
+    compatible: "ENFJ",
+    compatibleDesc: "서로의 감정을 존중하고 잘하는 점을 발견하며 응원해 줄 수 있어."
+  },
 
-      ESFP: {
-        pokemon: "루차불",
-        emoji: "🎭",
-        reason: "ESFP는 활기차고 사람들의 관심을 즐기는 타입이야.\n루차불처럼 화려한 매력과 넘치는 에너지로 분위기를 즐겁게 만들어 줘!",
-        compatible: "ISFJ · 밝은 에너지와 세심한 배려가 좋은 조화를 이룰 수 있어."
-      },
+  INFP: {
+    pokemon: "세레비",
+    emoji: "🌿",
+    reason: "상상력이 풍부하고 자신만의 소중한 가치를 중요하게 여기는 INFP!\n세레비처럼 자연을 아끼고 희망적인 분위기를 가진 모습이 잘 어울려.",
+    compatible: "ENFJ",
+    compatibleDesc: "서로의 꿈을 격려하고 마음을 이해하며 함께 성장할 수 있어."
+  },
 
-      ENFP: {
-        pokemon: "파치리스",
-        emoji: "🐿️",
-        reason: "ENFP는 호기심이 많고 새로운 경험을 즐기는 편이야.\n파치리스처럼 통통 튀는 에너지와 사랑스러운 매력으로 주변에 활기를 줘!",
-        compatible: "INFJ · 새로운 아이디어와 깊은 대화를 함께 즐길 수 있어."
-      },
+  INTP: {
+    pokemon: "폴리곤",
+    emoji: "💻",
+    reason: "새로운 원리와 지식을 탐구하는 것을 좋아하는 INTP!\n폴리곤처럼 독특하고 기술적인 이미지가 호기심 많은 성향과 잘 어울려.",
+    compatible: "ENTJ",
+    compatibleDesc: "분석적인 아이디어를 구체적인 계획으로 발전시키는 데 서로 도움을 줄 수 있어."
+  },
 
-      ENTP: {
-        pokemon: "조로아크",
-        emoji: "🦊",
-        reason: "ENTP는 독창적인 발상과 재치 있는 문제 해결을 즐겨.\n조로아크처럼 변화무쌍하고 영리한 이미지가 ENTP의 창의적인 면과 잘 어울려!",
-        compatible: "INTJ · 서로의 전략과 아이디어를 발전시킬 수 있어."
-      },
+  ESTP: {
+    pokemon: "갸라도스",
+    emoji: "🌊",
+    reason: "과감하게 도전하고 상황에 빠르게 대응하는 ESTP!\n갸라도스처럼 강한 에너지와 대담한 이미지가 잘 어울려.",
+    compatible: "ISFJ",
+    compatibleDesc: "서로 다른 장점을 배우며 새로운 상황에도 유연하게 대처할 수 있어."
+  },
 
-      ESTJ: {
-        pokemon: "엠페르트",
-        emoji: "👑",
-        reason: "ESTJ는 목표를 분명히 하고 책임감 있게 일을 이끄는 편이야.\n엠페르트처럼 당당하고 원칙을 중시하는 이미지가 잘 어울려!",
-        compatible: "ISTP · 계획을 세우는 능력과 실전 대처 능력이 서로에게 도움이 될 수 있어."
-      },
+  ESFP: {
+    pokemon: "루차불",
+    emoji: "🎭",
+    reason: "활기차고 사람들과 함께하는 순간을 즐기는 ESFP!\n루차불처럼 화려한 매력과 넘치는 에너지로 분위기를 즐겁게 만들어 줘.",
+    compatible: "ISFJ",
+    compatibleDesc: "밝은 에너지와 세심한 배려가 만나 좋은 균형을 이룰 수 있어."
+  },
 
-      ESFJ: {
-        pokemon: "이어롭",
-        emoji: "🐰",
-        reason: "ESFJ는 사람들과 잘 어울리고 주변을 챙기는 것을 중요하게 생각해.\n이어롭처럼 친근하고 다정하면서도 자신만의 매력을 가진 모습이 어울려!",
-        compatible: "ISFP · 서로를 배려하며 편안한 관계를 만들어 갈 수 있어."
-      },
+  ENFP: {
+    pokemon: "파치리스",
+    emoji: "🐿️",
+    reason: "호기심이 많고 새로운 경험을 즐기는 ENFP!\n파치리스처럼 통통 튀는 에너지와 사랑스러운 매력으로 주변에 활기를 줘.",
+    compatible: "INFJ",
+    compatibleDesc: "새로운 아이디어와 깊은 대화를 함께 나누며 서로를 이해할 수 있어."
+  },
 
-      ENFJ: {
-        pokemon: "메가니움",
-        emoji: "🌸",
-        reason: "ENFJ는 사람들을 격려하고 함께 성장하는 데 관심이 많아.\n메가니움처럼 온화한 분위기로 주변에 편안함과 긍정적인 기운을 줄 수 있어!",
-        compatible: "INFP · 서로의 감정을 존중하고 꿈을 응원할 수 있어."
-      },
+  ENTP: {
+    pokemon: "조로아크",
+    emoji: "🦊",
+    reason: "독창적인 발상과 재치 있는 문제 해결을 즐기는 ENTP!\n조로아크처럼 영리하고 변화무쌍한 이미지가 창의적인 면과 잘 어울려.",
+    compatible: "INTJ",
+    compatibleDesc: "서로의 전략과 아이디어를 발전시키며 새로운 방법을 발견할 수 있어."
+  },
 
-      ENTJ: {
-        pokemon: "레쿠쟈",
-        emoji: "🐉",
-        reason: "ENTJ는 큰 목표를 세우고 적극적으로 앞으로 나아가는 타입이야.\n레쿠쟈처럼 강렬한 존재감과 압도적인 카리스마를 가진 모습이 잘 어울려!",
-        compatible: "INTP · 전략적인 추진력과 창의적인 분석이 서로를 보완할 수 있어."
-      }
-    };
+  ESTJ: {
+    pokemon: "엠페르트",
+    emoji: "👑",
+    reason: "목표를 분명히 하고 책임감 있게 일을 이끄는 ESTJ!\n엠페르트처럼 당당하고 원칙을 중시하는 이미지가 잘 어울려.",
+    compatible: "ISTP",
+    compatibleDesc: "계획을 세우는 능력과 실전 대처 능력이 서로에게 도움이 될 수 있어."
+  },
 
-    const mbtiTypes = [
-      "ISTJ", "ISFJ", "INFJ", "INTJ",
-      "ISTP", "ISFP", "INFP", "INTP",
-      "ESTP", "ESFP", "ENFP", "ENTP",
-      "ESTJ", "ESFJ", "ENFJ", "ENTJ"
-    ];
+  ESFJ: {
+    pokemon: "이어롭",
+    emoji: "🐰",
+    reason: "사람들과 잘 어울리고 주변을 챙기는 것을 중요하게 생각하는 ESFJ!\n이어롭처럼 친근하고 다정하면서도 자신만의 매력을 가진 모습이 어울려.",
+    compatible: "ISFP",
+    compatibleDesc: "서로를 배려하고 각자의 취향을 존중하며 편안한 관계를 만들 수 있어."
+  },
 
-    const grid = document.getElementById("mbtiGrid");
+  ENFJ: {
+    pokemon: "메가니움",
+    emoji: "🌸",
+    reason: "사람들을 격려하고 함께 성장하는 데 관심이 많은 ENFJ!\n메가니움처럼 온화한 분위기로 주변에 편안함과 긍정적인 기운을 줄 수 있어.",
+    compatible: "INFP",
+    compatibleDesc: "서로의 감정을 존중하고 각자의 꿈을 응원하며 성장할 수 있어."
+  },
 
-    // 16가지 MBTI 버튼 생성
-    mbtiTypes.forEach(function(type) {
-      const button = document.createElement("button");
+  ENTJ: {
+    pokemon: "레쿠쟈",
+    emoji: "🐉",
+    reason: "큰 목표를 세우고 적극적으로 앞으로 나아가는 ENTJ!\n레쿠쟈처럼 강렬한 존재감과 카리스마를 가진 모습이 잘 어울려.",
+    compatible: "INTP",
+    compatibleDesc: "추진력과 창의적인 분석을 결합해 새로운 아이디어를 발전시킬 수 있어."
+  }
+};
 
-      button.type = "button";
-      button.className = "mbti-btn";
-      button.textContent = type;
+const mbtiTypes = [
+  "ISTJ", "ISFJ", "INFJ", "INTJ",
+  "ISTP", "ISFP", "INFP", "INTP",
+  "ESTP", "ESFP", "ENFP", "ENTP",
+  "ESTJ", "ESFJ", "ENFJ", "ENTJ"
+];
 
-      button.addEventListener("click", function() {
-        showResult(type);
-      });
+const grid = document.getElementById("mbtiGrid");
 
-      grid.appendChild(button);
-    });
+mbtiTypes.forEach(function(type) {
+  const button = document.createElement("button");
 
-    // 선택한 유형의 결과 표시
-    function showResult(type) {
-      const data = pokemonData[type];
+  button.type = "button";
+  button.className = "mbti-btn";
+  button.textContent = type;
 
-      document.getElementById("typeLabel").textContent =
-        "나의 MBTI: " + type;
+  button.addEventListener("click", function() {
+    showResult(type);
+  });
 
-      document.getElementById("pokemonEmoji").textContent =
-        data.emoji;
+  grid.appendChild(button);
+});
 
-      document.getElementById("pokemonName").textContent =
-        data.pokemon;
+function showResult(type) {
+  const data = pokemonData[type];
 
-      document.getElementById("pokemonDesc").textContent =
-        data.reason;
+  document.getElementById("typeLabel").textContent =
+    "MY TYPE  ·  " + type;
 
-      document.getElementById("compatibleType").textContent =
-        data.compatible;
+  document.getElementById("pokemonEmoji").textContent =
+    data.emoji;
 
-      document.getElementById("result").style.display = "block";
+  document.getElementById("pokemonName").textContent =
+    data.pokemon;
 
-      document.getElementById("result").scrollIntoView({
-        behavior: "smooth",
-        block: "start"
-      });
-    }
+  document.getElementById("pokemonDesc").textContent =
+    data.reason;
 
-    // 결과를 숨기고 다시 선택하기
-    function resetPage() {
-      document.getElementById("result").style.display = "none";
+  document.getElementById("compatibleType").textContent =
+    data.compatible;
 
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-      });
-    }
-  </script>
+  document.getElementById("compatibleDesc").textContent =
+    data.compatibleDesc;
+
+  const result = document.getElementById("result");
+  result.style.display = "block";
+
+  result.scrollIntoView({
+    behavior: "smooth",
+    block: "start"
+  });
+}
+
+function resetPage() {
+  document.getElementById("result").style.display = "none";
+
+  document.getElementById("mbtiGrid").scrollIntoView({
+    behavior: "smooth",
+    block: "center"
+  });
+}
+</script>
+
 </body>
 </html>
